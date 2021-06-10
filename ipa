@@ -1,0 +1,41 @@
+#!/bin/sh
+n=20
+interval=0.2
+uspint=473
+
+usage_exit() {
+        echo "Usage: $0 -n: bar_length t: interval"
+        exit 1
+}
+while getopts n:t:h OPT
+do
+    case $OPT in
+        n)  n=$OPTARG
+            ;;
+        t)  interval=$OPTARG
+            ;;
+        h)  usage_exit
+            ;;
+        *)  usage_exit
+            ;;
+    esac
+done
+
+for i in `seq $n`
+do
+  sleep $interval
+  printf "\r"
+  printf `expr \( $i \* 100 \) / $n`
+  printf "％"
+  printf "|"
+  eval printf "🍺%0.s" {1..$i} 
+  if [ $i -ne  $n ]; then
+  eval printf "　%0.s" {0..`expr $n - $i - 1`}  
+  fi
+  printf "| "
+  printf `expr \( $uspint \* $i \) \/ $n`
+  printf "ml "
+  printf `echo  \( $uspint \/ $n \) \/ $interval | bc`
+  printf "ml/s"
+done
+printf "\n"
